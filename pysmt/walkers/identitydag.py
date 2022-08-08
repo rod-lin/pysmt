@@ -225,6 +225,9 @@ class IdentityDagWalker(DagWalker):
     def walk_str_charat(self, formula, args, **kwargs):
         return self.mgr.StrCharAt(args[0], args[1])
 
+    def walk_str_to_re(self, formula, args, **kwargs):
+        return self.mgr.StrToRe(args[0])
+
     def walk_bv_tonatural(self, formula, args, **kwargs):
         return self.mgr.BVToNatural(args[0])
 
@@ -242,3 +245,15 @@ class IdentityDagWalker(DagWalker):
 
     def walk_div(self, formula, args, **kwargs):
         return self.mgr.Div(args[0], args[1])
+
+    def walk_re_none(self, formula, args, **kwargs):
+        return self.mgr.ReNone()
+
+    def walk_re_concat(self, formula, args, **kwargs):
+        return self.mgr.ReConcat(args[0], args[1])
+
+    def walk_re_union(self, formula, args, **kwargs):
+        return self.mgr.ReUnion(args[0], args[1])
+
+    def walk_re_closure(self, formula, args, **kwargs):
+        return self.mgr.ReClosure(args[0])

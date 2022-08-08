@@ -192,7 +192,12 @@ class HRLexer(Lexer):
             Rule(r"(str\.suffixof)", FunctionCallAdapter(self.mgr.StrSuffixOf, 100), False), # str_suffixof
             Rule(r"(str\.to\.int)", FunctionCallAdapter(self.mgr.StrToInt, 100), False), # str_to_int
             Rule(r"(int\.to\.str)", FunctionCallAdapter(self.mgr.IntToStr, 100), False), # int_to_str
+            Rule(r"(str\.to_re)", FunctionCallAdapter(self.mgr.StrToRe, 100), False), # str_to_re
             Rule(r"(bv2nat)", UnaryOpAdapter(self.mgr.BVToNatural, 100), False),#
+            Rule(r"(re\.none)", FunctionCallAdapter(self.mgr.ReNone, 100), False), # re_none
+            Rule(r"(re\.\+\+)", FunctionCallAdapter(self.mgr.ReConcat, 100), False), # re_concat
+            Rule(r"(re\.union)", FunctionCallAdapter(self.mgr.ReUnion, 100), False), # re_union
+            Rule(r"(re\.\*)", FunctionCallAdapter(self.mgr.ReClosure, 100), False), # re_closure
             Rule(r"'(.*?)'", self.identifier, True), # quoted identifiers
             Rule(r"([A-Za-z_][A-Za-z0-9_]*)", self.identifier, True),# identifiers
             Rule(r"(.)", self.lexing_error, True), # input error

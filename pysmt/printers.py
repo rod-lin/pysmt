@@ -256,6 +256,11 @@ class HRPrinter(TreeWalker):
         self.walk(formula.arg(0))
         self.write(")")
 
+    def walk_str_to_re(self,formula, **kwargs):
+        self.write("str.to_re(" )
+        self.walk(formula.arg(0))
+        self.write(")")
+
     def walk_array_select(self, formula):
         yield formula.arg(0)
         self.write("[")
@@ -322,6 +327,28 @@ class HRPrinter(TreeWalker):
     walk_bv_add = walk_plus
     walk_bv_mul = walk_times
     walk_bv_sub = walk_minus
+
+    def walk_re_none(self, formula, **kwargs):
+        self.write("re.none()")
+
+    def walk_re_concat(self, formula, **kwargs):
+        self.write("re.++(" )
+        self.walk(formula.arg(0))
+        self.write(", ")
+        self.walk(formula.arg(1))
+        self.write(")")
+
+    def walk_re_union(self, formula, **kwargs):
+        self.write("re.union(" )
+        self.walk(formula.arg(0))
+        self.write(", ")
+        self.walk(formula.arg(1))
+        self.write(")")
+
+    def walk_re_closure(self, formula, **kwargs):
+        self.write("re.*(" )
+        self.walk(formula.arg(0))
+        self.write(")")
 
 #EOC HRPrinter
 

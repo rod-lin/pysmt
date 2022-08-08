@@ -24,7 +24,7 @@ these operators.
 from itertools import chain
 
 
-ALL_TYPES = list(range(0,66))
+ALL_TYPES = list(range(0,71))
 
 (
 FORALL, EXISTS, AND, OR, NOT, IMPLIES, IFF, # Boolean Logic (0-6)
@@ -67,17 +67,24 @@ STR_SUFFIXOF,                               # Suffix (55)
 STR_TO_INT,                                 # atoi (56)
 INT_TO_STR,                                 # itoa (57)
 STR_CHARAT,                                 # Char at an index (58)
+STR_TO_RE,                                  # Convert a string to a singleton language (59)
 #
 # ARRAYS
 #
-ARRAY_SELECT,                               # Array Select (59)
-ARRAY_STORE,                                # Array Store (60)
-ARRAY_VALUE,                                # Array Value (61)
+ARRAY_SELECT,                               # Array Select (60)
+ARRAY_STORE,                                # Array Store (61)
+ARRAY_VALUE,                                # Array Value (62)
 
-DIV,                                        # Arithmetic Division (62)
-POW,                                        # Arithmetic Power (63)
-ALGEBRAIC_CONSTANT,                         # Algebraic Number (64)
-BV_TONATURAL,                               # BV to Natural Conversion (65)
+DIV,                                        # Arithmetic Division (63)
+POW,                                        # Arithmetic Power (64)
+ALGEBRAIC_CONSTANT,                         # Algebraic Number (65)
+BV_TONATURAL,                               # BV to Natural Conversion (66)
+
+# Regular Lanugages
+RE_NONE,                                    # Empty language (67)
+RE_CONCAT,                                  # Language concatenation (68)
+RE_UNION,                                   # Language union (69)
+RE_CLOSURE,                                 # Kleene closure (70)
 ) = ALL_TYPES
 
 QUANTIFIERS = frozenset([FORALL, EXISTS])
@@ -107,13 +114,16 @@ BV_OPERATORS = frozenset([BV_NOT, BV_AND, BV_OR, BV_XOR,
                           BV_COMP, BV_SDIV, BV_SREM, BV_ASHR])
 
 STR_OPERATORS = frozenset([STR_LENGTH, STR_CONCAT, STR_INDEXOF, STR_REPLACE,
-                           STR_SUBSTR, STR_CHARAT, STR_TO_INT, INT_TO_STR,])
+                           STR_SUBSTR, STR_CHARAT, STR_TO_INT, INT_TO_STR,
+                           STR_TO_RE])
+
+RE_OPERATORS = frozenset([RE_NONE, RE_CONCAT, RE_CLOSURE, RE_UNION])
 
 IRA_OPERATORS = frozenset([PLUS, MINUS, TIMES, TOREAL, DIV, POW, BV_TONATURAL])
 
 ARRAY_OPERATORS = frozenset([ARRAY_SELECT, ARRAY_STORE, ARRAY_VALUE])
 
-THEORY_OPERATORS = IRA_OPERATORS | BV_OPERATORS | ARRAY_OPERATORS | STR_OPERATORS
+THEORY_OPERATORS = IRA_OPERATORS | BV_OPERATORS | ARRAY_OPERATORS | STR_OPERATORS | RE_OPERATORS
 
 CUSTOM_NODE_TYPES = []
 
@@ -215,6 +225,7 @@ __OP_STR__ = {
     STR_TO_INT: "STR_TO_INT",
     INT_TO_STR: "INT_TO_STR",
     STR_CHARAT: "STR_CHARAT",
+    STR_TO_RE: "STR_TO_RE",
     BV_TONATURAL : "BV_TONATURAL",
     ARRAY_SELECT : "ARRAY_SELECT",
     ARRAY_STORE : "ARRAY_STORE",
@@ -222,4 +233,8 @@ __OP_STR__ = {
     DIV: "DIV",
     POW: "POW",
     ALGEBRAIC_CONSTANT: "ALGEBRAIC_CONSTANT",
+    RE_NONE: "RE_NONE",
+    RE_CONCAT: "RE_CONCAT",
+    RE_UNION: "RE_UNION",
+    RE_CLOSURE: "RE_CLOSURE",
 }

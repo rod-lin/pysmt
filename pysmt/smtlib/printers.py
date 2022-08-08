@@ -306,6 +306,12 @@ class SmtPrinter(TreeWalker):
         self.write(")")
 
     @write_annotations
+    def walk_str_to_re(self,formula, **kwargs):
+        self.write("( str.to_re " )
+        self.walk(formula.arg(0))
+        self.write(")")
+
+    @write_annotations
     def walk_array_value(self, formula):
         assign = formula.array_value_assigned_values_map()
         for _ in range(len(assign)):
@@ -321,6 +327,32 @@ class SmtPrinter(TreeWalker):
             self.write(" ")
             yield assign[k]
             self.write(")")
+
+    @write_annotations
+    def walk_re_none(self,formula, **kwargs):
+        self.write("( re.none )" )
+
+    @write_annotations
+    def walk_re_concat(self,formula, **kwargs):
+        self.write("( re.++ " )
+        self.walk(formula.arg(0))
+        self.write(" ")
+        self.walk(formula.arg(1))
+        self.write(")")
+
+    @write_annotations
+    def walk_re_union(self,formula, **kwargs):
+        self.write("( re.union " )
+        self.walk(formula.arg(0))
+        self.write(" ")
+        self.walk(formula.arg(1))
+        self.write(")")
+
+    @write_annotations
+    def walk_re_closure(self,formula, **kwargs):
+        self.write("( re.* " )
+        self.walk(formula.arg(0))
+        self.write(")")
 
 
 class SmtDagPrinter(DagWalker):
@@ -680,6 +712,10 @@ class SmtDagPrinter(DagWalker):
         return "( int.to.str %s )" % args[0]
 
     @write_annotations_dag
+    def walk_str_to_re(self,formula, args, **kwargs):
+        return "( str.to_re %s )" % args[0]
+
+    @write_annotations_dag
     def walk_array_value(self, formula, args, **kwargs):
         sym = self._new_symbol()
         self.openings += 1
@@ -700,6 +736,22 @@ class SmtDagPrinter(DagWalker):
             self.write(")")
         self.write("))")
         return sym
+
+    @write_annotations_dag
+    def walk_re_none(self,formula, args, **kwargs):
+        return "( re.none )"
+
+    @write_annotations_dag
+    def walk_re_concat(self,formula, args, **kwargs):
+        return "( re.++ %s %s )" % (args[0], args[1])
+
+    @write_annotations_dag
+    def walk_re_union(self,formula, args, **kwargs):
+        return "( re.union %s %s )" % (args[0], args[1])
+
+    @write_annotations_dag
+    def walk_re_closure(self,formula, args, **kwargs):
+        return "( re.* %s )" % args[0]
 
 
 def to_smtlib(formula, daggify=True):

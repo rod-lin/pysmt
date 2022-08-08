@@ -45,7 +45,7 @@ from pysmt.exceptions import (SolverReturnedUnknownResultError,
 from pysmt.decorators import clear_pending_pop, catch_conversion_error
 from pysmt.logics import LRA, LIA, QF_UFLRA, PYSMT_LOGICS
 from pysmt.oracles import get_logic
-from pysmt.constants import Fraction, Numeral, is_pysmt_integer, to_python_integer
+from pysmt.constants import Fraction, Numeral, is_pysmt_integer, to_python_integer, is_python_string
 
 
 # patch z3api
@@ -695,6 +695,19 @@ class Z3Converter(Converter, DagWalker):
         z3.Z3_inc_ref(self.ctx.ref(), z3term)
         return z3term
 
+    def walk_str_constant(self, formula, **kwargs):
+        const = formula.constant_value()
+        assert is_python_string(const)
+        _t = z3.StringVal(const, ctx=self.ctx)
+        z3term = _t.as_ast()
+        z3.Z3_inc_ref(self.ctx.ref(), z3term)
+        return z3term
+
+    def walk_str_to_re(self, formula, args, **kwargs):
+        z3term = z3.Z3_mk_seq_to_re(self.ctx.ref(), args[0])
+        z3.Z3_inc_ref(self.ctx.ref(), z3term)
+        return z3term
+
     def walk_quantifier(self, formula, args, **kwargs):
         qvars = formula.quantifier_vars()
         qvars, qvars_sz = self._to_ast_array([self.walk_symbol(x)\
@@ -839,6 +852,15 @@ class Z3Converter(Converter, DagWalker):
             z3.Z3_inc_ref(self.ctx.ref(), z3term)
         return z3term
 
+    def walk_re_none(self, formula, args, **kwargs):
+        str_sort = z3.Z3_mk_string_sort(self.ctx.ref())
+        z3.Z3_inc_ref(self.ctx.ref(), str_sort)
+        re_sort = z3.Z3_mk_re_sort(self.ctx.ref(), str_sort)
+        z3.Z3_inc_ref(self.ctx.ref(), re_sort)
+        z3term = z3.Z3_mk_re_empty(self.ctx.ref(), re_sort)
+        z3.Z3_inc_ref(self.ctx.ref(), z3term)
+        return z3term
+
     def _z3_to_type(self, sort):
         if sort.kind() == z3.Z3_BOOL_SORT:
             return types.BOOL
@@ -861,6 +883,13 @@ class Z3Converter(Converter, DagWalker):
             z3.Z3_inc_ref(self.ctx.ref(), z3term)
             return z3term
         return walk_nary
+
+    def make_walk_unary(func):
+        def walk_unary(self, formula, args, **kwargs):
+            z3term = func(self.ctx.ref(), args[0])
+            z3.Z3_inc_ref(self.ctx.ref(), z3term)
+            return z3term
+        return walk_unary
 
     def make_walk_binary(func):
         def walk_binary(self, formula, args, **kwargs):
@@ -901,6 +930,10 @@ class Z3Converter(Converter, DagWalker):
     walk_bv_ashr = make_walk_binary(z3.Z3_mk_bvashr)
     walk_exists = walk_quantifier
     walk_forall = walk_quantifier
+    
+    walk_re_concat = make_walk_nary(z3.Z3_mk_re_concat)
+    walk_re_union = make_walk_nary(z3.Z3_mk_re_union)
+    walk_re_closure = make_walk_unary(z3.Z3_mk_re_star)
 
     def _type_to_z3(self, tp):
         """Convert a pySMT type into the corresponding Z3 sort."""

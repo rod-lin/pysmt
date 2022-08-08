@@ -164,6 +164,14 @@ class _StringType(PySMTType):
     def is_string_type(self):
         return True
 
+class _RegLanType(PySMTType):
+    def __init__(self):
+        decl = _TypeDecl("RegLan", 0)
+        PySMTType.__init__(self, decl=decl, args=None)
+
+    def is_string_type(self):
+        return True
+
 # End Basic Types Declarations
 
 
@@ -382,6 +390,7 @@ BOOL = _BoolType()
 REAL = _RealType()
 INT =  _IntType()
 STRING = _StringType()
+REGLAN = _RegLanType()
 PYSMT_TYPES = frozenset([BOOL, REAL, INT])
 
 # Helper Constants
@@ -401,6 +410,7 @@ class TypeManager(object):
         self._real = None
         self._int = None
         self._string = None
+        self._reglan = None
         #
         self.load_global_types()
         self.environment = environment
@@ -414,6 +424,7 @@ class TypeManager(object):
         self._real = REAL
         self._int = INT
         self._string = STRING
+        self._reglan = REGLAN
 
     def BOOL(self):
         return self._bool
@@ -426,6 +437,9 @@ class TypeManager(object):
 
     def STRING(self):
         return self._string
+
+    def REGLAN(self):
+        return self._reglan
 
     def BVType(self, width=32):
         """Returns the singleton associated to the BV type for the given width.

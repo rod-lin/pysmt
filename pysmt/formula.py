@@ -1039,6 +1039,11 @@ class FormulaManager(object):
         """
         return self.create_node(node_type=op.STR_CHARAT, args=(s, i))
 
+    def StrToRe(self, s):
+        """Returns a singleton language containing only the string s.
+        """
+        return self.create_node(node_type=op.STR_TO_RE, args=(s,))
+
     def BVToNatural(self, formula):
         """Returns the Natural number represented by the BitVector.
 
@@ -1083,6 +1088,26 @@ class FormulaManager(object):
         return self.create_node(node_type=op.ALGEBRAIC_CONSTANT,
                                 args=tuple(),
                                 payload=val)
+
+    def ReNone(self):
+        """Returns the empty language.
+        """
+        return self.create_node(node_type=op.RE_NONE, args=())
+
+    def ReConcat(self, r1, r2):
+        """Returns the concatenation of two regular languages
+        """
+        return self.create_node(node_type=op.RE_CONCAT, args=(r1, r2))
+
+    def ReUnion(self, r1, r2):
+        """Returns the union of two regular languages
+        """
+        return self.create_node(node_type=op.RE_UNION, args=(r1, r2))
+
+    def ReClosure(self, r):
+        """Returns the Kleene closure of a regular language
+        """
+        return self.create_node(node_type=op.RE_CLOSURE, args=(r,))
 
     #
     # Helper functions

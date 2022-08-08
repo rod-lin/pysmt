@@ -1047,6 +1047,8 @@ class Simplifier(pysmt.walkers.DagWalker):
     @handles(op.SYMBOL)
     @handles(op.REAL_CONSTANT, op.INT_CONSTANT, op.BOOL_CONSTANT)
     @handles(op.BV_CONSTANT, op.STR_CONSTANT, op.ALGEBRAIC_CONSTANT)
+    @handles(op.STR_TO_RE)
+    @handles(op.RE_NONE, op.RE_CONCAT, op.RE_UNION, op.RE_CLOSURE) # TODO: implement simplifiers for them
     def walk_identity(self, formula, args, **kwargs):
         return formula
 

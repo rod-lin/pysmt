@@ -850,6 +850,11 @@ def IntToStr(x):
     """
     return get_env().formula_manager.IntToStr(x)
 
+def StrToRe(x):
+    """Returns the singleton language containing only s.
+    """
+    return get_env().formula_manager.StrToRe(x)
+
 #
 # Arrays
 #
@@ -894,6 +899,28 @@ def Array(idx_type, default, assigned_values=None):
     """
     return get_env().formula_manager.Array(idx_type, default, assigned_values)
 
+#
+# Regular Languages
+#
+def ReNone():
+    """Returns an empty language
+    """
+    return get_env().formula_manager.ReNone()
+
+def ReConcat(l1, l2):
+    """Returns the concatenation of two regular languages
+    """
+    return get_env().formula_manager.ReConcat(l1, l2)
+
+def ReUnion(l1, l2):
+    """Returns the union of two regular languages
+    """
+    return get_env().formula_manager.ReUnion(l1, l2)
+
+def ReClosure(l):
+    """Returns the Kleene closure of a regular language
+    """
+    return get_env().formula_manager.ReClosure(l)
 
 ##
 ## Shortcuts for Solvers Factory

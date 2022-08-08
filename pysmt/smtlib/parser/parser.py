@@ -438,10 +438,16 @@ class SmtLibParser(object):
                             'str.to.int':self._operator_adapter(mgr.StrToInt),
                             'int.to.str':self._operator_adapter(mgr.IntToStr),
                             'bv2nat':self._operator_adapter(mgr.BVToNatural),
+                            'str.to_re':self._operator_adapter(mgr.StrToRe),
                             # arrays
                             'select':self._operator_adapter(mgr.Select),
                             'store':self._operator_adapter(mgr.Store),
                             'as':self._enter_smtlib_as,
+                            # regular languages
+                            're.none':self._operator_adapter(mgr.ReNone),
+                            're.++':self._operator_adapter(mgr.ReConcat),
+                            're.union':self._operator_adapter(mgr.ReUnion),
+                            're.*':self._operator_adapter(mgr.ReClosure),
                             }
 
         # Command tokens
@@ -1049,6 +1055,8 @@ class SmtLibParser(object):
             res = self.env.type_manager.REAL()
         elif var == "String":
             res = self.env.type_manager.STRING()
+        elif var == "RegLan":
+            res = self.env.type_manager.REGLAN()
         else:
             res = self.cache.get(var)
             if res is None:

@@ -25,7 +25,7 @@ reasoning about the type of formulae.
 import pysmt.walkers as walkers
 import pysmt.operators as op
 
-from pysmt.typing import BOOL, REAL, INT, BVType, ArrayType, STRING
+from pysmt.typing import BOOL, REAL, INT, BVType, ArrayType, STRING, REGLAN
 from pysmt.exceptions import PysmtTypeError
 
 
@@ -101,6 +101,20 @@ class SimpleTypeChecker(walkers.DagWalker):
     def walk_str_to_int(self, formula, args, **kwargs):
         #pylint: disable=unused-argument
         return self.walk_type_to_type(formula, args, STRING, INT)
+
+    @walkers.handles(op.STR_TO_RE)
+    def walk_str_to_re(self, formula, args, **kwargs):
+        #pylint: disable=unused-argument
+        return self.walk_type_to_type(formula, args, STRING, REGLAN)
+
+    @walkers.handles(op.RE_CONCAT, op.RE_UNION, op.RE_CLOSURE)
+    def walk_re_to_re(self, formula, args, **kwargs):
+        #pylint: disable=unused-argument
+        return self.walk_type_to_type(formula, args, REGLAN, REGLAN)
+
+    def walk_re_none(self, formula, args, **kwargs):
+        assert formula is not None
+        return REGLAN
 
     @walkers.handles(op.STR_CONTAINS, op.STR_PREFIXOF, op.STR_SUFFIXOF)
     def walk_str_to_bool(self, formula, args, **kwargs):
