@@ -56,6 +56,8 @@ class Environment(object):
     TypesOracleClass = pysmt.oracles.TypesOracle
 
     def __init__(self):
+        self.disable_memoization = False
+        
         self._stc = self.TypeCheckerClass(self)
         self._formula_manager = self.FormulaManagerClass(self)
         # NOTE: Both Simplifier and Substituter keep an internal copy

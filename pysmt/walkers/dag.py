@@ -103,7 +103,14 @@ class DagWalker(Walker):
         if formula in self.memoization:
             return self.memoization[formula]
 
+        if self.env.disable_memoization:
+            old_memoization = self.memoization
+            self.memoization = dict(self.memoization)
+
         res = self.iter_walk(formula, **kwargs)
+
+        if self.env.disable_memoization:
+            self.memoization = old_memoization
 
         if self.invalidate_memoization:
             self.memoization.clear()
